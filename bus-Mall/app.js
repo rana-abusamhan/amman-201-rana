@@ -1,0 +1,114 @@
+'use strict';
+const container=document.getElementById('container');
+const firstImage=document.getElementById('firstImage');
+const secondImage=document.getElementById('secondImage');
+const thirdImage=document.getElementById('thirdImage');
+
+let imageItems=[    'bag.jpg',
+'banana.jpg',
+'bathroom.jpg',
+'boots.jpg',
+'breakfast.jpg',
+'bubblegum.jpg',
+'chair.jpg',
+'cthulhu.jpg',
+'dog-duck.jpg',
+'dragon.jpg',
+'pen.jpg',
+'pet-sweep.jpg',
+'scissors.jpg',
+'shark.jpg',
+'sweep.png',
+'tauntaun.jpg',
+'unicorn.jpg',
+'usb.gif',
+'water-can.jpg',
+'wine-glass.jpg'];
+
+
+let clickTotal=0;
+
+let Sections = function(name) {
+    this.name = name;
+    this.img = `./img/${name}`;
+    this.shown = 0;
+    this.clicks = 0;
+    Sections.all.push(this);
+};
+Sections.all = [];
+
+
+
+for(let i=0;i<imageItems.length;i++){
+new Sections(imageItems[i]);
+}
+
+let firstImageIndex=0;
+let secondImageIndex=0;
+let thirdImageIndex=0;
+
+
+
+function renderImage(){
+    let firstIndex=getRandom(0,imageItems.length-1);
+    let secondIndex;
+    let thirdIndex;
+    do{
+     secondIndex=getRandom(0,imageItems.length-1);
+     thirdIndex=getRandom(0,imageItems.length-1);
+    }while(firstIndex===secondIndex || secondIndex===thirdIndex 
+        || firstIndex===thirdIndex);
+
+
+    firstImage.src=Sections.all[firstIndex].img;
+    secondImage.src=Sections.all[secondIndex].img;
+    thirdImage.src=Sections.all[thirdIndex].img;
+
+    Sections.all[firstIndex].shown++;
+    Sections.all[secondIndex].shown++;
+    Sections.all[thirdIndex].shown++;
+
+    firstImageIndex=firstIndex;
+    secondImageIndex=secondIndex;
+    thirdImageIndex=thirdIndex;
+}
+
+renderImage();
+
+container.addEventListener('click', handler);
+function handler(event){
+    if((event.target.id ==='firstImage' ||
+     event.target.id==='secondImage' ||
+     event.target.id==='thirdImage') && clickTotal<25)
+     clickTotal++;
+
+     if(event.target.id==='firstImage'){
+         Sections.all[firstImageIndex].clicks++;
+     }
+     if(event.target.id==='secondImage'){
+        Sections.all[secondImageIndex].clicks++;
+     }
+     if(event.target.id==='thirdImage'){
+        Sections.all[thirdImageIndex].clicks++;
+     }
+
+     renderImage();
+}
+
+function getRandom(min,max){
+    min=Math.ceil(min);
+    max=Math.floor(max);
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+
+// show result
+let result=document.getElementById('result');
+function displayResult(){
+    for(let i=0;i<imageItems.length;i++){
+        let item=document.createElement('li');
+        result.appendChild(item);
+        item.textContent=`${Sections.all[i].name.split('.')[0]} had ${Sections.all[i].clicks} votes, and 
+        was seen ${Sections.all[i].shown} times. `;
+    }
+}
